@@ -14,15 +14,18 @@ module Api
 
     def create
       @meeting = Meeting.new meeting_params
-      if !@meeting.save
-        render :status => :forbidden, :text => "input_error"
-        return
+      unless @meeting.save
+        render status: :forbidden, json: @meeting.errors.full_messages; return
       end
       create_participants
       render 'show'
     end
 
     def update
+      unless @meeting.update_attributes meeting_params
+        render status: :forbidden, json: @meeting.errors.full_messages; return
+      end
+      create_participants
       render 'show'
     end
 

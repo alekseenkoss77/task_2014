@@ -1,0 +1,2 @@
+.errors
+	p == @errors[0]

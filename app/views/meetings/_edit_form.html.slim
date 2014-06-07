@@ -1,20 +1,20 @@
 == content_for :leftbar_header 
   h1.title Edit meeting
-  .form
+  div class="form" id="meeting_form"
     = hidden_field_tag 'meeting[id]'
     .field
       = label_tag  'meeting[name]', "Title", class: 'field-label'
       = text_input 'meeting[name]', "New Meeting", 'name-field'
     .datetime.inline
       .field.date.inline
-        = label_tag 'meeting[started_at_date]', "Title", class: 'field-label'
+        = label_tag 'meeting[started_at_date]', "Started date", class: 'field-label'
         = text_input 'meeting[started_at_date]', '', ' date-field'
       .field.time.inline
-        = label_tag 'meeting[started_at_time]', "Time", class: 'field-label'
+        = label_tag 'meeting[started_at_time]', "Started time", class: 'field-label'
         = text_input 'meeting[started_at_time]', '', 'time-field'
     .actions.inline
-      = link_to "Cancel", "#", class: 'button inline button-cancel cancel-btn' 
-      = link_to "Save", "#", class: 'button inline button-save'
+      = link_to "Cancel", "#", class: 'button inline button-cancel cancel-btn'
+      = link_to "Save", "#", class: 'button inline button-save', id: 'save_meeting_btn' 
 == content_for :leftbar_content
   .fixed-wrapper
     .content-header

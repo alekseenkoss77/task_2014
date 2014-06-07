@@ -105,6 +105,40 @@ $ ->
         users_page = 0 
       )
 
+  clear_form = ->
+    $('.form input').val("")
+
+  set_form_title = (title) ->
+    $('.leftbar .header .title').text(title)
+
+  show_form = ->
+    show_leftbar()
+    overw.one 'click', hide_leftbar
+    $('.leftbar .cancel-btn').one 'click', hide_leftbar
+
+  send_meeting = (url, type, id=null) ->
+    data = 
+        "meeting[name]": $("#meeting_name").val()
+        "meeting[started_at_date]": $("#meeting_started_at_date").val()
+        "meeting[started_at_time]": $("#meeting_started_at_time").val()
+        "meeting[id]" : $('#meeting_id').val()
+    $.ajax
+      url: url
+      type: type
+      dataType: "json"
+      data: data
+
+      headers:
+        "X-CSRF-Token": AUTH_TOKEN
+
+      success: (data) ->
+        hide_leftbar()
+        reload_meetings()
+        clear_form()
+
+      error: (xhr, text) ->
+        $("#meeting_form").before(JST['templates/errors/show_errors']({errors: xhr.responseJSON}))
+
   $('.leftbar .add-users-btn').on 'click', ->
     popup_users_list.empty()
     $('.select_users_popup .load-more .link').show()
@@ -119,13 +153,24 @@ $ ->
     return
 
   $('.main .edit-btn').on 'click', ->
-    confirm('pending')
+    $('#save_meeting_btn').data('action','update')
+    set_form_title('Edit Meeting')
+    clear_form()
+    $('#create_meeting_btn').attr('id','update_meeting_btn')
+    item = $('.item.is-selected')
+    datetime = item.find('.meeting-datetime').text().split(' ')
+    $('#meeting_started_at_date').val(datetime[0] + ' ' + datetime[1])
+    $('#meeting_started_at_time').val(datetime[2] + ' ' + datetime[3])
+    $('#meeting_name').val(item.find('.meeting-title a').text())
+    $('#meeting_id').val(item.find('.meeting-title a').data('id'))
+    show_form()
     return
 
   $('.main .sidebar .create-btn').on 'click', ->
-    show_leftbar()
-    overw.one 'click', hide_leftbar
-    $('.leftbar .cancel-btn').one 'click', hide_leftbar
+    clear_form()
+    $('#save_meeting_btn').data('action','create')
+    set_form_title('Create Meeting')
+    show_form()
 
   list.on 'click', '.item', (e) ->
     toggle_list_select($(e.currentTarget))
@@ -137,6 +182,13 @@ $ ->
 
   $('.select_users_popup .load-more .link').on 'click', (e) ->
     select_users()
+    return
+
+  # bind click "Save" button and send request to create meeting  
+  $("#save_meeting_btn").on "click", (e) ->
+    switch $(this).data('action')
+      when 'create' then send_meeting('/api/meetings.json', 'POST')
+      when 'update' then send_meeting('/api/meetings/' + $('#meeting_id').val() + '.json', 'PUT')
     return
 
   load_meetings()
