@@ -52,10 +52,8 @@ $ ->
       $('.main .list-header .actions .buttons').animate({top: "0"},500)
 
 
-
-  load_meetings = ->
-    return if current_page == 0
-    $.ajax(url: '/api/meetings.json', type: "GET", dataType: "json", data: {page: current_page, per_page: 300}, success: (data) ->
+  index_or_search_meetings = (url) -> 
+    $.ajax(url: url, type: "GET", dataType: "json", data: {page: current_page, per_page: 300}, success: (data) ->
       list.append(JST['templates/meetings/meeting_item'](m)) for m in data.meetings
       
       list.find('.meeting-title .link').on 'click', (e) ->
@@ -68,6 +66,9 @@ $ ->
         current_page = 0 
       )
 
+  load_meetings = ->
+    return if current_page == 0
+    index_or_search_meetings('/api/meetings.json')
 
   reload_meetings = ->
     current_page = 1
@@ -165,6 +166,12 @@ $ ->
     $('#meeting_id').val(item.find('.meeting-title a').data('id'))
     show_form()
     return
+
+  $('#q_').on 'change', ->
+    current_page=1
+    list.empty()
+    q = $(this).val()
+    index_or_search_meetings('/api/meetings.json?q='+q)
 
   $('.main .sidebar .create-btn').on 'click', ->
     clear_form()

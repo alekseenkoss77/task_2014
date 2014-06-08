@@ -10,6 +10,8 @@ Teachabse::Application.routes.draw do
   get 'logout' => 'user_sessions#destroy', :as => :logout
 
   namespace :api do
+    get '/meetings/search/:q', to: "meetings#search", as: :search_meetings
+    
     resources :meetings
     resources :users
   end

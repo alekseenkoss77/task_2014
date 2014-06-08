@@ -25,6 +25,12 @@ gem 'skim'
 gem "font-awesome-rails"
 gem 'jquery-rails'
 
+# for browser client timezone detect
+gem 'detect_timezone_rails'
+
+# for fulltext PostgreSQL search
+gem 'textacular', '~> 3.0'
+
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 1.2'
 

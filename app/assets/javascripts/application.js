@@ -13,3 +13,6 @@
 //= require jquery
 //= require_tree ./templates
 //= require main_progress
+//= require detect_timezone
+//= require jquery.detect_timezone
+//= require timezone

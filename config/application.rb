@@ -18,6 +18,9 @@ module Teachabse
     config.encoding = "utf-8"
     config.time_zone = 'Moscow'
     
+    # for pg textsearch indexes (textacular gem) 
+    # config.active_record.schema_format = :sql
+
     config.i18n.default_locale = :en
     config.i18n.available_locales = [:en]
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}')]

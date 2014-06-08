@@ -28,7 +28,8 @@ $ ->
 
   load_users = ->
     return if current_page == 0
-    $.ajax(url: '/api/users.json', type: "GET", dataType: "json", data: {page: current_page, per_page: 300, filter: {age: filter.age, gender: filter.gender}}, success: (data) ->
+    q = $("#q_").val()
+    $.ajax(url: '/api/users.json', type: "GET", dataType: "json", data: {q: q, page: current_page, per_page: 300, filter: {age: filter.age, gender: filter.gender}}, success: (data) ->
       list.append(JST['templates/users/user_item'](u)) for u in data.users
       
       current_page+=1
@@ -60,6 +61,11 @@ $ ->
 
   $('.sidebar .apply-btn').on 'click', ->
     apply_filter()
+
+  $("#q_").on 'change', -> 
+    list.empty()
+    current_page=1
+    load_users()
 
   male_cb.on 'click', (e) ->
     checkbox_input = male_cb.find('input')

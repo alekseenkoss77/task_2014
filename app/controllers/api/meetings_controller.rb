@@ -4,8 +4,8 @@ module Api
     before_action :set_meeting, only: [:show, :destroy, :update]
 
     def index
-      @meetings = Meeting.paginate(page_params).order(order)
-      @meetings = @meetings.where("name ilike :q", q: "%#{ params[:q]}%" ) if params[:q].to_s != ''
+      @meetings = Meeting.fulltext_search(params[:q]).paginate(page_params) unless params[:q].blank?
+      @meetings = Meeting.paginate(page_params) unless @meetings
     end
 
     def show
@@ -14,10 +14,12 @@ module Api
 
     def create
       @meeting = Meeting.new meeting_params
-      unless @meeting.save
-        render status: :forbidden, json: @meeting.errors.full_messages; return
+      @meeting.transaction do
+        unless @meeting.save
+          render status: :forbidden, json: @meeting.errors.full_messages; return
+        end
+        # create_participants
       end
-      create_participants
       render 'show'
     end
 
@@ -39,11 +41,11 @@ module Api
     end
 
     private
-      def create_participants
-        return if not participants_params
-        participants_params.each { |p| @meeting.add_user(p[:id],p[:role]) }
-        @meeting.save
-      end
+      # def create_participants
+      #   return if not participants_params
+      #   participants_params.each { |p| @meeting.add_user(p[:id],p[:role]) }
+      #   @meeting.save
+      # end
 
       def participants_params
         params[:participants]

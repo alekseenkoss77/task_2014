@@ -1,5 +1,10 @@
 class User < ActiveRecord::Base
-
+  include Searchable
+  include Filterable
+  
+  MALE = 1
+  FEMALE = 0
+	 
   authenticates_with_sorcery! 
   
   before_validation { self.email = email.downcase }
