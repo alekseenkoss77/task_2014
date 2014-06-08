@@ -18,7 +18,7 @@ module Api
         unless @meeting.save
           render status: :forbidden, json: @meeting.errors.full_messages; return
         end
-        # create_participants
+        create_participants
       end
       render 'show'
     end
@@ -41,11 +41,11 @@ module Api
     end
 
     private
-      # def create_participants
-      #   return if not participants_params
-      #   participants_params.each { |p| @meeting.add_user(p[:id],p[:role]) }
-      #   @meeting.save
-      # end
+      def create_participants
+        return if not participants_params
+        participants_params.each { |p| @meeting.add_user(p[:id],p[:role]) }
+        @meeting.save
+      end
 
       def participants_params
         params[:participants]

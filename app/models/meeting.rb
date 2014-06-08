@@ -1,13 +1,10 @@
 class Meeting < ActiveRecord::Base
   include Searchable
 
-  attr_accessor :participants
 
   date_time_attribute :started_at
   validates :started_at, presence: true 
   validates :name, presence: true
-
-  before_validation :show_participants
 
   SELECT_FIELDS = 'users.*, assignments.role as role, assignments.created_at as registered_at'
   
@@ -37,9 +34,5 @@ class Meeting < ActiveRecord::Base
   private
     def user_id(user)
       user.is_a?(User) ? user.id : user
-    end
-
-    def show_participants
-      p "-"*100; p participants
     end
 end
